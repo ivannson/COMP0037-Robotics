@@ -7,6 +7,7 @@ from nav_msgs.msg import Odometry
 
 from math import pow, atan2, sqrt, pi
 
+
 waypoints = {}
 
 with open(sys.argv[1]) as f:
