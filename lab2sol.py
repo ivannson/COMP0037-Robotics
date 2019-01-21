@@ -100,22 +100,19 @@ class Robot_controller:
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
 
+            print(self.steering_angle(goal_x,goal_y))
             # Angular velocity in the z-axis.
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
             vel_msg.angular.z = self.angular_vel(goal_x,goal_y)
-    
 
             # Publishing our vel_msg
-            print(vel_msg)
             self.velocity_publisher.publish(vel_msg)
 
             # Publish at the desired rate.
             self.rate.sleep()
 
         
-        rospy.loginfo('Current position, x: {}, y:{}, theta:{}'.format(self.x,
-                self.y, self.theta))
 
         
 
@@ -124,11 +121,10 @@ class Robot_controller:
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
 
-
         while abs(goal_theta-self.theta)  >= self.angle_tolerance:
 
             vel_msg.angular.z = ((goal_theta-self.theta)*pi/180)*2
-            print(vel_msg)
+            
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
         
@@ -137,6 +133,9 @@ class Robot_controller:
         vel_msg.linear.x = 0
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
+
+        rospy.loginfo('Current position, x: {}, y:{}, theta:{}'.format(self.x,
+                self.y, self.theta))
 
     # If we press control + C, the node will stop.
    
@@ -144,9 +143,10 @@ if __name__ == '__main__':
     try:
         x = Robot_controller()
         for waypoint in waypoints.values():
+            print(waypoint)
             x.move2goal(waypoint)
-            rospy.spin()
-            rospy.sleep(1)
+            rospy.sleep(2)
+        rospy.spin()
 
     except rospy.ROSInterruptException:
         pass
