@@ -127,7 +127,7 @@ class Robot_controller:
 
         while abs(goal_theta-self.theta)  >= self.angle_tolerance:
 
-            vel_msg.angular.z = (goal_theta-self.theta)*2
+            vel_msg.angular.z = ((goal_theta-self.theta)*pi/180)*2
             print(vel_msg)
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
