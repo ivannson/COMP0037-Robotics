@@ -65,18 +65,22 @@ class Robot_controller:
         """Euclidean distance between current pose and the goal."""
         return sqrt(pow((x - self.x), 2) +
                     pow((y - self.y), 2))
+    #Works out the distance using pythagerous therom 
 
     def linear_vel(self,x,y, constant=1.5):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * self.euclidean_distance(x,y)
+    #Multiplies distance by constant to increase speed of movement
 
     def steering_angle(self,x,y):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return atan2(y - self.y, x - self.x)
+    #Using tan in a triangle works out the direction to move
 
     def angular_vel(self,x,y, constant=6):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * (self.steering_angle(x,y) - self.theta)
+    #Speed at rotation is done.
 
     def move2goal(self, waypoint):
         """Moves the turtle to the goal."""
@@ -103,8 +107,8 @@ class Robot_controller:
             # Angular velocity in the z-axis.
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
-            vel_msg.angular.z = self.angular_vel(goal_x,goal_y)
-    
+            # vel_msg.angular.z = self.angular_vel(goal_x,goal_y)
+            vel_msg.angular.z = 0
 
             # Publishing our vel_msg
             print(vel_msg)
@@ -117,13 +121,10 @@ class Robot_controller:
         rospy.loginfo('Current position, x: {}, y:{}, theta:{}'.format(self.x,
                 self.y, self.theta))
 
-        
-
         # Stopping our robot after the movement is over.
         vel_msg.linear.x = 0
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
-
 
         while abs(goal_theta-self.theta)  >= self.angle_tolerance:
 
@@ -132,21 +133,21 @@ class Robot_controller:
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
         
-
         # Stopping our robot after the movement is over.
         vel_msg.linear.x = 0
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
 
     # If we press control + C, the node will stop.
-   
+
 if __name__ == '__main__':
     try:
         x = Robot_controller()
+        #Works through set waypoints
         for waypoint in waypoints.values():
             x.move2goal(waypoint)
-            rospy.spin()
-            rospy.sleep(1)
+            rospy.sleep(2)
+        rospy.spin()
 
     except rospy.ROSInterruptException:
         pass
