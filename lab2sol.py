@@ -105,6 +105,18 @@ class Robot_controller:
             vel_msg.angular.z = 0
             self.velocity_publisher.publish(vel_msg)
 
+            while abs(self.steering_angle(goal_x,goal_y)- (self.theta*pi/180)) >= 0.1:
+                print('steering_angle = {}'.format(self.steering_angle(goal_x, goal_y)*180/pi))
+                print('self theta = {}'.format(self.theta))
+                #print(self.steering_angle(goal_x, goal_y)-(self.theta*180)/pi)
+                vel_msg.angular.z = self.angular_vel(goal_x,goal_y,constant=3)
+            
+                self.velocity_publisher.publish(vel_msg)
+                self.rate.sleep()
+
+            vel_msg.angular.z = 0
+            self.velocity_publisher.publish(vel_msg)
+
             # Porportional controller.
             # https://en.wikipedia.org/wiki/Proportional_control
 
@@ -123,6 +135,8 @@ class Robot_controller:
             self.velocity_publisher.publish(vel_msg)
             # Publish at the desired rate.
             self.rate.sleep()
+
+        
 
         # Stopping our robot after the movement is over.
         vel_msg.linear.x = 0
