@@ -45,9 +45,9 @@ class Robot_controller:
         self.y = 0
         self.theta = 0
 
-        # Set the distance and angle tolerance
-        self.distance_tolerance = 0.1
-        self.angle_tolerance = 5
+        # Set the distance and angle tolerance, decreased tolerance to increase accuracy
+        self.distance_tolerance = 0.01
+        self.angle_tolerance = 0.1
 
         self.rate = rospy.Rate(10)
 
@@ -65,18 +65,22 @@ class Robot_controller:
         """Euclidean distance between current pose and the goal."""
         return sqrt(pow((x - self.x), 2) +
                     pow((y - self.y), 2))
+    #Works out the distance using pythagerous therom 
 
     def linear_vel(self,x,y, constant=1.5):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * self.euclidean_distance(x,y)
+    #Multiplies distance by constant to increase speed of movement
 
     def steering_angle(self,x,y):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return atan2(y - self.y, x - self.x)
+    #Using tan in a triangle works out the direction to move
 
     def angular_vel(self,x,y, constant=6):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
-        return constant * (self.steering_angle(x,y) - self.theta)
+        return constant * (self.steering_angle(x,y) - self.theta*pi/180)
+    #Speed at rotation is done.
 
     def move2goal(self, waypoint):
         """Moves the turtle to the goal."""
@@ -87,10 +91,21 @@ class Robot_controller:
         goal_y = int(waypoint[1])
         goal_theta = int(waypoint[2])
 
-
         vel_msg = Twist()
 
         while self.euclidean_distance(goal_x,goal_y) >= self.distance_tolerance:
+
+            while abs(self.steering_angle(goal_x,goal_y)- (self.theta*pi/180)) >= 0.1:
+                print('steering_angle = {}'.format(self.steering_angle(goal_x, goal_y)*180/pi))
+                print('self theta = {}'.format(self.theta))
+                #print(self.steering_angle(goal_x, goal_y)-(self.theta*180)/pi)
+                vel_msg.angular.z = self.angular_vel(goal_x,goal_y,constant=3)
+            
+                self.velocity_publisher.publish(vel_msg)
+                self.rate.sleep()
+
+            vel_msg.angular.z = 0
+            self.velocity_publisher.publish(vel_msg)
 
             # Porportional controller.
             # https://en.wikipedia.org/wiki/Proportional_control
@@ -100,19 +115,16 @@ class Robot_controller:
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
 
-            print(self.steering_angle(goal_x,goal_y))
+          
             # Angular velocity in the z-axis.
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
             vel_msg.angular.z = self.angular_vel(goal_x,goal_y)
-
+            vel_msg.angular.z = 0
             # Publishing our vel_msg
             self.velocity_publisher.publish(vel_msg)
-
             # Publish at the desired rate.
             self.rate.sleep()
-
-        
 
         
 
@@ -128,9 +140,7 @@ class Robot_controller:
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
         
-
         # Stopping our robot after the movement is over.
-        vel_msg.linear.x = 0
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
 
@@ -138,10 +148,11 @@ class Robot_controller:
                 self.y, self.theta))
 
     # If we press control + C, the node will stop.
-   
+
 if __name__ == '__main__':
     try:
         x = Robot_controller()
+        #Works through set waypoints
         for waypoint in waypoints.values():
             print(waypoint)
             x.move2goal(waypoint)
