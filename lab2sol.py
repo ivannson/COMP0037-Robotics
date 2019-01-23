@@ -84,13 +84,13 @@ class Robot_controller:
 
     def wp_angle(self,goal_x, goal_y):
 
+        print(goal_y, goal_x, self.x, self.y)
         hyp = sqrt(pow(goal_x, 2) + pow(goal_y - self.y, 2))
         y = sqrt( pow(goal_x -self.x ,2) + pow(goal_y - self.y, 2))
-    
-
         angle = acos((pow(self.x, 2) + pow(y,2) - pow(hyp, 2))/(2*self.x*y))
-        
-        return (pi - angle)
+        angle = angle *(180/pi)
+
+        return (180 - angle)
 
 
     def move2goal(self, waypoint):
@@ -104,11 +104,26 @@ class Robot_controller:
 
         vel_msg = Twist()
 
-        if goal_y - self.y > self.distance_tolerance:
-            print('meh', goal_y, self.y)
-            turning_angle = self.wp_angle(goal_x, goal_y)
+        
+        if abs((goal_y - self.y) < self.distance_tolerance) and (goal_x>self.x):
+            turning_angle = 0
+            print('meh')
+        elif abs((goal_y - self.y) < self.distance_tolerance) and (goal_x<self.x): 
+            turning_angle = 180
+        elif abs((goal_x - self.x) < self.distance_tolerance) and (goal_y>self.y):
+            turning_angle = 90
+        elif abs((goal_x - self.x) < self.distance_tolerance) and (goal_y<self.y):
+            turning_angle = -90
         else:
-            turning_angle = 0 
+            turning_angle = self.wp_angle(goal_x, goal_y)
+        
+        # if abs((goal_y - self.y) < self.distance_tolerance):
+        #     if abs((goal_x - self.x) < self.distance_tolerance):
+        #         print('meh')
+        #         turning_angle = 0
+        #     else:
+        #         pass
+
 
         while self.euclidean_distance(goal_x,goal_y) >= self.distance_tolerance:
 
@@ -119,17 +134,9 @@ class Robot_controller:
             #         self.velocity_publisher.publish(vel_msg)
             #         self.rate.sleep()
             #else:
-                
-            while abs(turning_angle - (self.theta*pi/180)) >= 0.1:
-                print('wp_angle = {}'.format((self.wp_angle(goal_x, goal_y))*180/pi))
-                print('self theta = {}'.format(self.theta))
-            
-                
+            while abs(turning_angle - (self.theta)) >= 0.1:
                 #print(self.steering_angle(goal_x, goal_y)-(self.theta*180)/pi)
-                vel_msg.angular.z = (turning_angle - (self.theta*pi/180))*2
-
-                print(vel_msg)
-
+                vel_msg.angular.z = ((turning_angle - (self.theta))*pi/180)
                 self.velocity_publisher.publish(vel_msg)
                 self.rate.sleep()
 
@@ -184,7 +191,9 @@ if __name__ == '__main__':
             print(waypoint)
             x.move2goal(waypoint)
             rospy.sleep(2)
+        print("RATE ME FAM I DID IT")
         rospy.spin()
+        
 
     except rospy.ROSInterruptException:
         pass
