@@ -7,7 +7,7 @@ import sys
 import rospy
 from geometry_msgs.msg import Twist, Pose
 from nav_msgs.msg import Odometry
-from math import pow, atan2, sqrt, pi
+from math import pow, atan2, sqrt, pi, acos
 
 # Create a dictionary to store the x, y and rotation values for each waypoint as a dictionary
 # Waypoints are numbered in the order they appear in the .txt file
@@ -42,11 +42,11 @@ class Robot_controller:
         
         #Initialize variables to store the current x and y coordiantes and current orientation (theta)
         self.x = 0
-        self.y = 0
+        self.y = 2
         self.theta = 0
 
         # Set the distance and angle tolerance, decreased tolerance to increase accuracy
-        self.distance_tolerance = 0.01
+        self.distance_tolerance = 0.1
         self.angle_tolerance = 0.1
 
         self.rate = rospy.Rate(10)
@@ -58,8 +58,8 @@ class Robot_controller:
         #Odomotry has a nested data structure. The pose is an attribute of pose with covariance 
         self.pose = data.pose.pose
         self.theta = 2 * atan2(self.pose.orientation.z, self.pose.orientation.w) * 180 / pi
-        self.x = round(self.pose.position.x, 4)
-        self.y = round(self.pose.position.y, 4)
+        self.x = round(self.pose.position.x, 1)
+        self.y = round(self.pose.position.y, 1) 
 
     def euclidean_distance(self,x,y):
         """Euclidean distance between current pose and the goal."""
@@ -67,7 +67,7 @@ class Robot_controller:
                     pow((y - self.y), 2))
     #Works out the distance using pythagerous therom 
 
-    def linear_vel(self,x,y, constant=1.5):
+    def linear_vel(self,x,y, constant=1):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * self.euclidean_distance(x,y)
     #Multiplies distance by constant to increase speed of movement
@@ -82,8 +82,19 @@ class Robot_controller:
         return constant * (self.steering_angle(x,y) - self.theta*pi/180)
     #Speed at rotation is done.
 
+    def wp_angle(self,goal_x, goal_y):
+
+        print(goal_y, goal_x, self.x, self.y)
+        hyp = sqrt(pow(goal_x, 2) + pow(goal_y - self.y, 2))
+        y = sqrt( pow(goal_x -self.x ,2) + pow(goal_y - self.y, 2))
+        angle = acos((pow(self.x, 2) + pow(y,2) - pow(hyp, 2))/(2*self.x*y))
+        angle = angle *(180/pi)
+
+        return (180 - angle)
+
+
     def move2goal(self, waypoint):
-        """Moves the turtle to the goal."""
+        """Moves the robot to the goal."""
 
 
         # Set goal position and orientation to waypoint values
@@ -93,24 +104,42 @@ class Robot_controller:
 
         vel_msg = Twist()
 
-        if (self.theta) >= self.angle_tolerance:
-            while (self.theta >= self.angle_tolerance):
-                print('meh')
-                vel_msg.angular.z = ((0-self.theta)*pi/180)*2
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
         
+        if abs((goal_y - self.y) < self.distance_tolerance) and (goal_x>self.x):
+            turning_angle = 0
+            print('meh')
+        elif abs((goal_y - self.y) < self.distance_tolerance) and (goal_x<self.x): 
+            turning_angle = 180
+        elif abs((goal_x - self.x) < self.distance_tolerance) and (goal_y>self.y):
+            turning_angle = 90
+        elif abs((goal_x - self.x) < self.distance_tolerance) and (goal_y<self.y):
+            turning_angle = -90
+        else:
+            turning_angle = self.wp_angle(goal_x, goal_y)
+        
+        # if abs((goal_y - self.y) < self.distance_tolerance):
+        #     if abs((goal_x - self.x) < self.distance_tolerance):
+        #         print('meh')
+        #         turning_angle = 0
+        #     else:
+        #         pass
+
+
         while self.euclidean_distance(goal_x,goal_y) >= self.distance_tolerance:
        
             vel_msg.angular.z = 0
             self.velocity_publisher.publish(vel_msg)
 
-            while abs(self.steering_angle(goal_x,goal_y)- (self.theta*pi/180)) >= 0.1:
-                print('steering_angle = {}'.format(self.steering_angle(goal_x, goal_y)*180/pi))
-                print('self theta = {}'.format(self.theta))
+            # if self.x == 0:
+
+            #     while abs(self.steering_angle(goal_x, goal_y)-self.theta*pi/180) >= 0.1:
+            #         vel_msg.angular.z = self.angular_vel(goal_x,goal_y,constant=3)
+            #         self.velocity_publisher.publish(vel_msg)
+            #         self.rate.sleep()
+            #else:
+            while abs(turning_angle - (self.theta)) >= 0.1:
                 #print(self.steering_angle(goal_x, goal_y)-(self.theta*180)/pi)
-                vel_msg.angular.z = self.angular_vel(goal_x,goal_y,constant=3)
-            
+                vel_msg.angular.z = ((turning_angle - (self.theta))*pi/180)
                 self.velocity_publisher.publish(vel_msg)
                 self.rate.sleep()
 
@@ -144,6 +173,7 @@ class Robot_controller:
         self.velocity_publisher.publish(vel_msg)
 
         while abs(goal_theta-self.theta)  >= self.angle_tolerance:
+     
             vel_msg.angular.z = ((goal_theta-self.theta)*pi/180)*2
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
@@ -165,7 +195,9 @@ if __name__ == '__main__':
             print(waypoint)
             x.move2goal(waypoint)
             rospy.sleep(2)
+        print("RATE ME FAM I DID IT")
         rospy.spin()
+        
 
     except rospy.ROSInterruptException:
         pass
