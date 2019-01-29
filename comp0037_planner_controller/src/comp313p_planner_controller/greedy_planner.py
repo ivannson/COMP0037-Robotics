@@ -3,14 +3,14 @@
 from cell_based_forward_search import CellBasedForwardSearch
 from collections import deque
 
-# This class implements the FIFO - or breadth first search - planning
-# algorithm. It works by using a double ended queue: cells are pushed
-# onto the back of the queue, and are popped from the front of the
-# queue.
+# This class implements the Greedy - or best first search - planning
+# algorithm. It works by using a priority queue: cells are sorted and
+# the best cell is put onto the front of the queue, 
+# The best current cell is then popped from the front of the queue 
 
-class FIFOPlanner(CellBasedForwardSearch):
+class GREEDYPlanner(CellBasedForwardSearch):
 
-    # self implements a simple FIFO search algorithm
+    # self implements a simple GREEDY search algorithm
     
     def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
