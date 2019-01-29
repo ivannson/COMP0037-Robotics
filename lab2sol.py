@@ -126,6 +126,9 @@ class Robot_controller:
 
 
         while self.euclidean_distance(goal_x,goal_y) >= self.distance_tolerance:
+       
+            vel_msg.angular.z = 0
+            self.velocity_publisher.publish(vel_msg)
 
             # if self.x == 0:
 
@@ -147,10 +150,11 @@ class Robot_controller:
             # https://en.wikipedia.org/wiki/Proportional_control
 
             # Linear velocity in the x-axis.
-            vel_msg.linear.x = self.linear_vel(goal_x,goal_y)
+            #vel_msg.linear.x = (goal_x-self.x)
+            vel_msg.linear.x = 0
+            #vel_msg.linear.y = (goal_y-self.y)
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
-
           
             # Angular velocity in the z-axis.
             vel_msg.angular.x = 0
