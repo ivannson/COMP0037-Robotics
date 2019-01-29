@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from heapq import heappush, heappop, heapify
 from cell_based_forward_search import CellBasedForwardSearch
 from collections import deque
 
@@ -14,19 +14,20 @@ class GREEDYPlanner(CellBasedForwardSearch):
     
     def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
-        self.fifoQueue = deque()
+        self.priorityQueue = []
+        heapify(self.priorityQueue)
 
     # Simply put on the end of the queue
     def pushCellOntoQueue(self, cell):
-        self.fifoQueue.append(cell)
+        heappush(self.priorityQueue, cell)
 
     # Check the queue size is zero
     def isQueueEmpty(self):
-        return not self.fifoQueue
+        return not self.priorityQueue
 
     # Simply pull from the front of the list
     def popCellFromQueue(self):
-        cell = self.fifoQueue.popleft()
+        cell = heappop(self.priorityQueue)
         return cell
 
     def resolveDuplicate(self, cell, parentCell):
