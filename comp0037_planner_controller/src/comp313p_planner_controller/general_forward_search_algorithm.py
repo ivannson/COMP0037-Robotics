@@ -135,7 +135,7 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
             for nextCell in cells:
                 if (self.hasCellBeenVisitedAlready(nextCell) == False):
                     self.markCellAsVisitedAndRecordParent(nextCell, cell)
-                    self.pushCellOntoQueue(nextCell)
+                    self.pushCellOntoQueue(nextCell, goalCoords)
                     self.numberOfCellsVisited = self.numberOfCellsVisited + 1
                 else:
                     self.resolveDuplicate(nextCell, cell)
