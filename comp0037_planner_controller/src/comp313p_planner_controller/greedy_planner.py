@@ -19,9 +19,12 @@ class GREEDYPlanner(CellBasedForwardSearch):
         heapify(self.priorityQueue)
 
     # Simply put on the end of the queue
-    def pushCellOntoQueue(self, cell, goalcoords):
+    def pushCellOntoQueue(self, cell):
+        goalcoords = (20,0)
         eucliddistance = sqrt(((cell.coords[0]-goalcoords[0])**2)+((cell.coords[1]-goalcoords[1])**2))
         cell.pathCost = eucliddistance
+        print(cell.pathCost)
+        cell_with_cost = (pathCost, cell)
         heappush(self.priorityQueue, cell)
 
     # Check the queue size is zero
