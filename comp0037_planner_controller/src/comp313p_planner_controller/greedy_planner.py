@@ -13,16 +13,22 @@ class GREEDYPlanner(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
     
-    def __init__(self, title, occupancyGrid):
+    def __init__(self, title, occupancyGrid, goal):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
+        self.goal = goal
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
+    def eucliddistance(self, cell):
+        eucliddistance = sqrt(((cell.coords[0]-self.goal[0])**2)+((cell.coords[1]-self.goal[1])**2))    
+        return eucliddistance
+
+
     # Simply put on the end of the queue
-    def pushCellOntoQueue(self, cell, goalcoords):
-        eucliddistance = sqrt(((cell.coords[0]-goalcoords[0])**2)+((cell.coords[1]-goalcoords[1])**2))
-        cell.pathCost = eucliddistance
-        heappush(self.priorityQueue, cell)
+    def pushCellOntoQueue(self, cell):
+        cost = eucliddistance(cell)
+        cell_with_cost = (cost, cell)
+        heappush(self.priorityQueue, cell_with_cost )
 
     # Check the queue size is zero
     def isQueueEmpty(self):

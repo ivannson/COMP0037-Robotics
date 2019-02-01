@@ -21,7 +21,7 @@ goal = (20, 0)
 
 # Create the planner. The first field is the title which will appear in the
 # graphics window, the second the occupancy grid used.
-planner = GREEDYPlanner('Best First Search', occupancyGrid);
+planner = GREEDYPlanner('Best First Search', occupancyGrid, goal);
 
 # This causes the planner to slow down and pause for things like key entries
 planner.setRunInteractively(True)
