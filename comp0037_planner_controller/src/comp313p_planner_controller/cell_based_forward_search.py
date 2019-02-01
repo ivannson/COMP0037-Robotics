@@ -14,6 +14,7 @@ class CellBasedForwardSearch(GeneralForwardSearchAlgorithm):
     # Check if the goal has been reached. We do this by checking position rather than object instance values,
     # because the latter failed sometimes.
     def hasGoalBeenReached(self, cell):
+       
         goalReached = (cell.coords[0] == self.goal.coords[0]) & (cell.coords[1] == self.goal.coords[1])
         return goalReached
 

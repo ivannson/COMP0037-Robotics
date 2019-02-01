@@ -12,21 +12,21 @@ from math import sqrt
 class GREEDYPlanner(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
-    
-    def __init__(self, title, occupancyGrid, goal):
+    def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
-        self.goal = goal
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
+    # Calculate the euclidean distance between the current cell and the goal   
     def eucliddistance(self, cell):
-        eucliddistance = sqrt(((cell.coords[0]-self.goal[0])**2)+((cell.coords[1]-self.goal[1])**2))    
+        eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
         return eucliddistance
 
 
-    # Simply put on the end of the queue
+    #Sort the elements and put the best at the front
     def pushCellOntoQueue(self, cell):
-        cost = eucliddistance(cell)
+        cost = self.eucliddistance(cell)
+        # Create tuple containing cost and cell
         cell_with_cost = (cost, cell)
         heappush(self.priorityQueue, cell_with_cost )
 
@@ -36,7 +36,9 @@ class GREEDYPlanner(CellBasedForwardSearch):
 
     # Simply pull from the front of the list
     def popCellFromQueue(self):
-        cell = heappop(self.priorityQueue)
+        cell_with_cost = heappop(self.priorityQueue)
+        # Get the cell from the cell_with_cost tuple
+        cell = cell_with_cost[1]
         return cell
 
     def resolveDuplicate(self, cell, parentCell):
