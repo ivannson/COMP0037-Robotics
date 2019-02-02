@@ -9,7 +9,7 @@ from math import sqrt
 # the best cell is put onto the front of the queue, 
 # The best current cell is then popped from the front of the queue 
 
-class GREEDYPlanner(CellBasedForwardSearch):
+class DIJKSTRAPlanner(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
     def __init__(self, title, occupancyGrid):

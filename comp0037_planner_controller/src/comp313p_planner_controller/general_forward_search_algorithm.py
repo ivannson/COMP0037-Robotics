@@ -59,6 +59,9 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
     # Handle the case that a cell has been visited already.
     def resolveDuplicate(self, cell):
         raise NotImplementedError()
+
+    def setcellcost(self, cell):
+        raise NotImplementedError()
     
     # Compute the additive cost of performing a step from the parent to the
     # current cell. This calculation is carried out the same way no matter
@@ -135,6 +138,7 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
             for nextCell in cells:
                 if (self.hasCellBeenVisitedAlready(nextCell) == False):
                     self.markCellAsVisitedAndRecordParent(nextCell, cell)
+                    self.setcellcost(nextCell)
                     self.pushCellOntoQueue(nextCell)
                     self.numberOfCellsVisited = self.numberOfCellsVisited + 1
                 else:
