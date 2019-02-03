@@ -60,7 +60,3 @@ class CellBasedForwardSearch(GeneralForwardSearchAlgorithm):
     def hasCellBeenVisitedAlready(self, cell):
         return (cell.label == CellLabel.OBSTRUCTED) | (cell.label == CellLabel.DEAD) \
             | (cell.label == CellLabel.ALIVE)
-    
-    def setcellcost(self, cell):
-        eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
-        cell.pathCost = eucliddistance
