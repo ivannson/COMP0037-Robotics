@@ -10,7 +10,7 @@ from time import sleep
 # the best cell is put onto the front of the queue, 
 # The best current cell is then popped from the front of the queue 
 
-class ASTARPlanner(CellBasedForwardSearch):
+class ASTARPLANNER(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
     def __init__(self, title, occupancyGrid):

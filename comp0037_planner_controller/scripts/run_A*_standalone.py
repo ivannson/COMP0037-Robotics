@@ -4,7 +4,7 @@
 # a LIFO planner is created instead of a FIFO planner.
 
 from comp313p_planner_controller.occupancy_grid import OccupancyGrid
-from comp313p_planner_controller.A*_planner import ASTARPLANNER
+from comp313p_planner_controller.ASTAR_planner import ASTARPLANNER
 
 occupancyGrid = OccupancyGrid(21, 21, 0.5)
 
@@ -14,7 +14,7 @@ for y in xrange(1, 19):
 start = (3, 18)
 goal = (20, 0)
 
-planner = DIJKSTRAPlanner('Depth First Search', occupancyGrid);
+planner = ASTARPLANNER('Depth First Search', occupancyGrid);
 planner.setRunInteractively(True)
 
 planner.setWindowHeightInPixels(400)
