@@ -3,7 +3,7 @@ from heapq import heappush, heappop, heapify
 from cell_based_forward_search import CellBasedForwardSearch
 from collections import deque
 from math import sqrt
-from time import sleep
+
 
 # This class implements the Greedy - or best first search - planning
 # algorithm. It works by using a priority queue: cells are sorted and
@@ -13,33 +13,11 @@ from time import sleep
 class ASTARPLANNER(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
-    def __init__(self, title, occupancyGrid):
+    def __init__(self, title, occupancyGrid, heuristic):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
+        self.heuristic = heuristic
         self.priorityQueue = []
         heapify(self.priorityQueue)
-
-    # Calculate the euclidean distance between the current cell and the goal   
-    def eucliddistance(self, cell):
-        eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
-        return eucliddistance
-
-    def pathcostcalc(self,cell):
-        #The travel cost from the current cell back to the start
-        travelCost = 0
-        #Stores the cell into inital 
-        initialcell = cell
-        
-        #Works out the cost using a loop going through the current cells path and adding the distance between each cell
-        travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
-        if travelCost > 0:
-            travelCost += self.eucliddistance(cell)
-
-        while (cell is not None):
-            travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
-            cell = cell.parent
-
-        #Stores into the pathcost into the cell object
-        initialcell.pathCost = travelCost
 
     #Sort the elements and put the best at the front
     def pushCellOntoQueue(self, cell):
@@ -57,6 +35,7 @@ class ASTARPLANNER(CellBasedForwardSearch):
         # Get the cell from the cell_with_cost tuple
         cell = cell_with_cost[1]
         return cell
+
 
     def resolveDuplicate(self, cell, parentCell):
         newqueue =[]
@@ -82,3 +61,59 @@ class ASTARPLANNER(CellBasedForwardSearch):
             self.pushCellOntoQueue(cell)
             for oldcells in newqueue:
                 self.pushCellOntoQueue(oldcells)
+
+
+
+    def pathcostcalc(self,cell):
+        #The travel cost from the current cell back to the start
+        travelCost = 0
+        #Stores the cell into inital 
+        initialcell = cell
+        
+        #Works out the cost using a loop going through the current cells path and adding the distance between each cell
+        travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
+        if travelCost > 0:
+
+            travelCost += self.heuristic_cost(cell)
+
+        while (cell is not None):
+            travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
+            cell = cell.parent
+
+        #Stores into the pathcost into the cell object
+        initialcell.pathCost = travelCost
+
+
+
+    def heuristic_cost(self, cell):
+
+        if self.heuristic == 'euclidean_distance':
+            # Calculate the euclidean distance between the current cell and the goal
+            dx = abs(cell.coords[0] - self.goal.coords[0])
+            dy = abs(cell.coords[1] - self.goal.coords[1])
+            return 1*sqrt(dx**2 + dy**2)
+
+        elif self.heuristic == 'always_zero':
+            # Heuristic of 0 is identical to Dijkstra
+            return 0
+
+        elif self.heuristic == 'constant':
+            # Add non-negative constant to cost
+            return 1
+        
+        elif self.heuristic == 'octile_distance':
+            # Calculate the octile distance between the current cell and the goal
+            dx = abs(cell.coords[0] - self.goal.coords[0])
+            dy = abs(cell.coords[1] - self.goal.coords[1])
+            return 1*max(dx,dy) + (sqrt(2)-1)*min(dx,dy)
+        
+        elif self.heuristic == 'manhattan_distance':
+            # Calculate the manhattan distance between the current cell and the goal
+            dx = abs(cell.coords[0] - self.goal.coords[0])
+            dy = abs(cell.coords[1] - self.goal.coords[1])
+            return 1*(dx+dy)
+
+
+      
+ 
+
