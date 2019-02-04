@@ -18,11 +18,6 @@ class DIJKSTRAPlanner(CellBasedForwardSearch):
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
-    # Calculate the euclidean distance between the current cell and the goal   
-    def eucliddistance(self, cell):
-        eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
-        return eucliddistance
-
     def pathcostcalc(self,cell):
         #The travel cost from the current cell back to the start
         travelCost = 0
@@ -31,9 +26,7 @@ class DIJKSTRAPlanner(CellBasedForwardSearch):
         
         #Works out the cost using a loop going through the current cells path and adding the distance between each cell
         travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
-        if travelCost > 0:
-            travelCost += self.eucliddistance(cell)
-
+        
         while (cell is not None):
             travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
             cell = cell.parent

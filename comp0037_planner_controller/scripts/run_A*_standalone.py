@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+import sys
 # See run_fifo_standalone.py for documentation. The only difference is that
 # a LIFO planner is created instead of a FIFO planner.
 
@@ -14,7 +14,9 @@ for y in xrange(1, 19):
 start = (3, 18)
 goal = (20, 0)
 
-planner = ASTARPLANNER('Depth First Search', occupancyGrid);
+heuristic = sys.argv[2]
+
+planner = ASTARPLANNER('Depth First Search',occupancyGrid, heuristic);
 planner.setRunInteractively(True)
 
 planner.setWindowHeightInPixels(400)

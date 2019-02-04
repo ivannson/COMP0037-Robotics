@@ -13,8 +13,9 @@ from time import sleep
 class ASTARPLANNER(CellBasedForwardSearch):
 
     # self implements a simple GREEDY search algorithm
-    def __init__(self, title, occupancyGrid):
+    def __init__(self, title, occupancyGrid, heuristic):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
+        self.heuristic = heuristic
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
@@ -22,6 +23,27 @@ class ASTARPLANNER(CellBasedForwardSearch):
     def eucliddistance(self, cell):
         eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
         return eucliddistance
+
+    def octiledistance(self,cell):
+        octiledist =0
+        dx = abs(cell.coords[0] - self.goal.coords)
+        dy = abs(cell.coords[1]- self.goal.coords)
+
+        if dx > dy:
+            octiledist = dx + (sqrt(2)-1)*dy
+        else:
+            octiledist = dy + (sqrt(2)-1)*dx
+
+        return octiledist
+
+    def manhattandistance(self,cell):
+        manhattandistance =0 
+        dx = abs(cell.coords[0] - self.goal.coords)
+        dy = abs(cell.coords[1]- self.goal.coords)
+
+        manhattandistance = dx + dy
+
+        return manhattandistance
 
     def pathcostcalc(self,cell):
         #The travel cost from the current cell back to the start
@@ -31,8 +53,21 @@ class ASTARPLANNER(CellBasedForwardSearch):
         
         #Works out the cost using a loop going through the current cells path and adding the distance between each cell
         travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
-        if travelCost > 0:
-            travelCost += self.eucliddistance(cell)
+        if self.heuristic == 'zero':
+            travelCost = travelCost + 0
+        elif self.heuristic == 'constant':
+            if travelCost > 0:
+                travelCost = travelCost + 7
+        elif self.heuristic == 'euclid':
+            if travelCost > 0:
+                travelCost += self.eucliddistance(cell)
+        elif self.heuristic == 'octile':
+            if travelCost > 0:
+                travelCost += self.octiledistance(cell)
+        else self.heuristic == 'manh':
+            if travelCost > 0:
+
+
 
         while (cell is not None):
             travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
