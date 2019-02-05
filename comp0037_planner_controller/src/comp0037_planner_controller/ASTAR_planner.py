@@ -3,6 +3,7 @@ from heapq import heappush, heappop, heapify
 from cell_based_forward_search import CellBasedForwardSearch
 from collections import deque
 from math import sqrt
+from time import sleep
 
 
 # This class implements the A star planning
@@ -13,9 +14,10 @@ from math import sqrt
 class ASTARPLANNER(CellBasedForwardSearch):
 
     # self implements a dijkstra search algorithm
-    def __init__(self, title, occupancyGrid, heuristic):
+    def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
-        self.heuristic = heuristic
+        self.heuristic = 'zero'
+        self.weighting = 1
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
@@ -31,13 +33,22 @@ class ASTARPLANNER(CellBasedForwardSearch):
 
     # Simply pull from the front of the list
     def popCellFromQueue(self):
-        cell_with_cost = heappop(self.priorityQueue)
-        # Get the cell from the cell_with_cost tuple
-        cell = cell_with_cost[1]
-        return cell
+        try:
+            cell_with_cost = heappop(self.priorityQueue)
+            # Get the cell from the cell_with_cost tuple
+            cell = cell_with_cost[1]
+            return cell
+        except IndexError:
+            print(self.priorityQueue)
+            while 1:
+                pass
+            
 
 
     def resolveDuplicate(self, cell, parentCell):
+ 
+        #print(self.priorityQueue)
+
         newqueue =[]
         
         #Calculate the length between the current cell and the duplicate cell 
@@ -47,6 +58,8 @@ class ASTARPLANNER(CellBasedForwardSearch):
         
         #If the predicted path is less than the current path then it needs to be changed.
         if predicted_path_cost < cell.pathCost:
+            print('cell cost:',cell.pathCost)
+            print('Predicted cost:',predicted_path_cost)
             #The duplicate cell needs to have the current cell as its parent
             cell.parent = parentCell
             cell.pathCost = predicted_path_cost
@@ -58,9 +71,17 @@ class ASTARPLANNER(CellBasedForwardSearch):
                 currentcell = self.popCellFromQueue()
             
             #Stores the cells before it can access the wanted cell then places the new cell and all the old ones
-            self.pushCellOntoQueue(cell)
-            for oldcells in newqueue:
-                self.pushCellOntoQueue(oldcells)
+            heappush(self.priorityQueue, (cell.pathCost, cell))
+            for oldcell in newqueue:
+                heappush(self.priorityQueue, (oldcell.pathCost, oldcell))
+
+        #print('meh')
+
+        #print(self.priorityQueue)
+       #print(newqueue)
+    
+        
+        
 
 
 
@@ -88,31 +109,31 @@ class ASTARPLANNER(CellBasedForwardSearch):
 
     def heuristic_cost(self, cell):
 
-        if self.heuristic == 'euclidean_distance':
+        if self.heuristic == 'euclidean':
             # Calculate the euclidean distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])
-            return 1*sqrt(dx**2 + dy**2)
+            return self.weighting*sqrt(dx**2 + dy**2)
 
-        elif self.heuristic == 'always_zero':
+        elif self.heuristic == 'zero':
             # Heuristic of 0 is identical to Dijkstra
             return 0
 
         elif self.heuristic == 'constant':
             # Add non-negative constant to cost
-            return 1
+            return self.weighting
         
-        elif self.heuristic == 'octile_distance':
+        elif self.heuristic == 'octile':
             # Calculate the octile distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])
-            return 1*max(dx,dy) + (sqrt(2)-1)*min(dx,dy)
+            return self.weighting*max(dx,dy) + (sqrt(2)-1)*min(dx,dy)
         
-        elif self.heuristic == 'manhattan_distance':
+        elif self.heuristic == 'manhattan':
             # Calculate the manhattan distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])
-            return 1*(dx+dy)
+            return self.weighting*(dx+dy)
 
 
       

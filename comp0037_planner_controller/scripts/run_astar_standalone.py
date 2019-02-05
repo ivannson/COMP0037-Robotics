@@ -17,9 +17,12 @@ goal = (20, 0)
 
 # Choice of heuristic is taken as a command line argument
 heuristic = sys.argv[1]
+weighting = float(sys.argv[2])
 
 
-planner = ASTARPLANNER('Depth First Search', occupancyGrid, heuristic);
+planner = ASTARPLANNER('Depth First Search', occupancyGrid);
+planner.heuristic = heuristic
+planner.weighting = weighting
 planner.setRunInteractively(True)
 
 planner.setWindowHeightInPixels(400)
