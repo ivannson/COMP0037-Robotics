@@ -5,14 +5,14 @@ from collections import deque
 from math import sqrt
 
 
-# This class implements the Greedy - or best first search - planning
+# This class implements the A star planning
 # algorithm. It works by using a priority queue: cells are sorted and
 # the best cell is put onto the front of the queue, 
 # The best current cell is then popped from the front of the queue 
 
 class ASTARPLANNER(CellBasedForwardSearch):
 
-    # self implements a simple GREEDY search algorithm
+    # self implements a dijkstra search algorithm
     def __init__(self, title, occupancyGrid, heuristic):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
         self.heuristic = heuristic
@@ -83,7 +83,8 @@ class ASTARPLANNER(CellBasedForwardSearch):
         #Stores into the pathcost into the cell object
         initialcell.pathCost = travelCost
 
-
+    '''Reduce the number of states explored by the algorithm by incorporating a
+        heuristic estimate of the cost to get to the goal from a given state '''
 
     def heuristic_cost(self, cell):
 

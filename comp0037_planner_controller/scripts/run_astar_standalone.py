@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
-# See run_fifo_standalone.py for documentation. The only difference is that
-# a LIFO planner is created instead of a FIFO planner.
+
 
 from comp313p_planner_controller.occupancy_grid import OccupancyGrid
 from comp313p_planner_controller.ASTAR_planner import ASTARPLANNER
@@ -15,8 +14,10 @@ for y in xrange(1, 19):
 start = (3, 18)
 goal = (20, 0)
 
+
+# Choice of heuristic is taken as a command line argument
 heuristic = sys.argv[1]
-print(heuristic)
+
 
 planner = ASTARPLANNER('Depth First Search', occupancyGrid, heuristic);
 planner.setRunInteractively(True)
