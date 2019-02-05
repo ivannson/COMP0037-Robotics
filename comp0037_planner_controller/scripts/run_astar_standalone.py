@@ -2,8 +2,8 @@
 
 
 
-from comp313p_planner_controller.occupancy_grid import OccupancyGrid
-from comp313p_planner_controller.ASTAR_planner import ASTARPLANNER
+from comp0037_planner_controller.occupancy_grid import OccupancyGrid
+from comp0037_planner_controller.ASTAR_planner import ASTARPLANNER
 import sys
 
 occupancyGrid = OccupancyGrid(21, 21, 0.5)

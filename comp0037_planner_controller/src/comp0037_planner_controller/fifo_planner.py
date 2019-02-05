@@ -10,8 +10,7 @@ from collections import deque
 
 class FIFOPlanner(CellBasedForwardSearch):
 
-    # self implements a simple FIFO search algorithm
-    
+    # Construct the new planner object
     def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
         self.fifoQueue = deque()

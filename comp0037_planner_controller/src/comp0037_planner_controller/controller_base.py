@@ -9,8 +9,7 @@ from planned_path import PlannedPath
 import time
 import math
 
-# This class defines a possible base of what the robot controller
-# could do.
+# This is the base class of the controller which moves the robot to its goal.
 
 class ControllerBase(object):
 

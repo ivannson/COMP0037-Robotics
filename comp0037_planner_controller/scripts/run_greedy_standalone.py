@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
 # Import the needed types.
-from comp313p_planner_controller.occupancy_grid import OccupancyGrid
-from comp313p_planner_controller.greedy_planner import GREEDYPlanner
+from comp0037_planner_controller.occupancy_grid import OccupancyGrid
+from comp0037_planner_controller.greedy_planner import GREEDYPlanner
 
 # Create the occupancy grid. Syntax is: number of cells in X, number of cells in Y,
 # length of each cell in m

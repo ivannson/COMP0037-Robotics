@@ -13,7 +13,7 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
 
     # This class implements the basic framework for LaValle's general
     # template for forward search. It includes a lot of methods for
-    # managing the graphical output as well
+    # managing the graphical output as well.
     
     def __init__(self, title, occupancyGrid):
         PlannerBase.__init__(self, title, occupancyGrid)
@@ -82,12 +82,14 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
     # cells in the search grid and the search algorithm is then run.
     def search(self, startCoords, goalCoords):
 
-        # Empty the queue. self is needed to make sure everything is reset
+        # Make sure the queue is empty. We do this so that we can keep calling
+        # the same method multiple times and have it work.
         while (self.isQueueEmpty() == False):
             self.popCellFromQueue()
         
-        # Create the search grid from the occupancy grid and seed
+        # Create or update the search grid from the occupancy grid and seed
         # unvisited and occupied cells.
+        
         if (self.searchGrid is None):
             self.searchGrid = SearchGrid.fromOccupancyGrid(self.occupancyGrid)
         else:
@@ -161,7 +163,7 @@ class GeneralForwardSearchAlgorithm(PlannerBase):
 
     # This method extracts a path from the pathEndCell to the start
     # cell. The path is a list actually sorted in the order:
-    # cell(x_I), cell(x_1), ... , cell(x_K), cell(x_G). You can use
+    # cell(x_1), cell(x_2), ... , cell(x_K), cell(x_G). You can use
     # this method to try to find the path from any end cell. However,
     # depending upon the planner used, the results might not be
     # valid. In this case, the path will probably not terminate at the

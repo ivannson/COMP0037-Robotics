@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # This class stores information about each cell - its coordinates in the grid,
-# and its label
+# its label, its parents and the path cost.
 
 from enum import Enum
 

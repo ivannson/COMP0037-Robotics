@@ -3,8 +3,8 @@ import rospy
 from geometry_msgs.msg  import Twist
 from geometry_msgs.msg  import Pose
 from math import pow,atan2,sqrt
-from comp313p_planner_controller.planned_path import PlannedPath
-from comp313p_planner_controller.controller_base import ControllerBase
+from comp0037_planner_controller.planned_path import PlannedPath
+from comp0037_planner_controller.controller_base import ControllerBase
 import math
 import angles
 
@@ -75,7 +75,7 @@ class Move2GoalController(ControllerBase):
             angleError = self.shortestAngularDistance(self.pose.theta,
                                                       atan2(waypoint[1] - self.pose.y, waypoint[0] - self.pose.x))
 
-        # Stopping our robot after the movement is over
+        # Make sure the robot is stopped once we reach the destination.
         vel_msg.linear.x = 0
         vel_msg.angular.z = 0
         self.velocityPublisher.publish(vel_msg)

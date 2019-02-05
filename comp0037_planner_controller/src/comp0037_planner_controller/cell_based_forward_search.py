@@ -6,7 +6,8 @@ from cell import *
 
 class CellBasedForwardSearch(GeneralForwardSearchAlgorithm):
 
-    # Self implements a simple FIFO search algorithm
+    # This implements the logic for doing a forward search for an environment which consists of a set of goals.
+    
     
     def __init__(self, title, occupancyGrid):
         GeneralForwardSearchAlgorithm.__init__(self, title, occupancyGrid)
@@ -14,7 +15,6 @@ class CellBasedForwardSearch(GeneralForwardSearchAlgorithm):
     # Check if the goal has been reached. We do this by checking position rather than object instance values,
     # because the latter failed sometimes.
     def hasGoalBeenReached(self, cell):
-       
         goalReached = (cell.coords[0] == self.goal.coords[0]) & (cell.coords[1] == self.goal.coords[1])
         return goalReached
 
@@ -23,7 +23,7 @@ class CellBasedForwardSearch(GeneralForwardSearchAlgorithm):
     # separately. It encodes the "clock around" logic.
     def getNextSetOfCellsToBeVisited(self, cell):
 
-        # self stores the set of valid actions / cells
+        # This stores the set of valid actions / cells
         cells = list();
 
         # Go through all the neighbours and add the cells if they

@@ -11,16 +11,16 @@ from nav_msgs.srv import GetMap
 
 # The service messages this node sends. This is actually a report
 # that the robot has reached its goal
-from comp313p_planner_controller.srv import *
+from comp0037_planner_controller.srv import *
 
 # The occupancy grid, used to store our representation of the map
-from comp313p_planner_controller.occupancy_grid import OccupancyGrid
+from comp0037_planner_controller.occupancy_grid import OccupancyGrid
 
 # The planner used to figure out the path
-from comp313p_planner_controller.fifo_planner import FIFOPlanner
+from comp0037_planner_controller.fifo_planner import FIFOPlanner
 
 # The controller to drive the robot along the path
-from comp313p_planner_controller.move2goal_controller import Move2GoalController
+from comp0037_planner_controller.move2goal_controller import Move2GoalController
 
 # Self class interfaces with the planner and the controller
 class PlannerControllerNode(object):

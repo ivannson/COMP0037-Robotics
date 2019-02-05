@@ -4,7 +4,7 @@ from cell_based_forward_search import CellBasedForwardSearch
 
 class LIFOPlanner(CellBasedForwardSearch):
 
-    # This implements a simple LIFO search algorithm
+    # This implements a simple LIFO (last in first out or depth first) search algorithm
     
     def __init__(self, title, occupancyGrid):
         CellBasedForwardSearch.__init__(self, title, occupancyGrid)
