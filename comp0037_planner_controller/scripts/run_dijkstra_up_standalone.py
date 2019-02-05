@@ -11,8 +11,8 @@ occupancyGrid = OccupancyGrid(21, 21, 0.5)
 for y in xrange(1, 19):
     occupancyGrid.setCell(11, y, 1)
 
-start = (3, 18)
-goal = (20, 0)
+start = (3, 5)
+goal = (20, 18)
 
 planner = DIJKSTRAPlanner('Depth First Search', occupancyGrid);
 planner.setRunInteractively(True)

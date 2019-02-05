@@ -19,66 +19,6 @@ class ASTARPLANNER(CellBasedForwardSearch):
         self.priorityQueue = []
         heapify(self.priorityQueue)
 
-<<<<<<< HEAD
-    # Calculate the euclidean distance between the current cell and the goal   
-    def eucliddistance(self, cell):
-        eucliddistance = sqrt(((cell.coords[0]-self.goal.coords[0])**2)+((cell.coords[1]-self.goal.coords[1])**2))    
-        return eucliddistance
-
-    def octiledistance(self,cell):
-        octiledist =0
-        dx = abs(cell.coords[0] - self.goal.coords)
-        dy = abs(cell.coords[1]- self.goal.coords)
-
-        if dx > dy:
-            octiledist = dx + (sqrt(2)-1)*dy
-        else:
-            octiledist = dy + (sqrt(2)-1)*dx
-
-        return octiledist
-
-    def manhattandistance(self,cell):
-        manhattandistance =0 
-        dx = abs(cell.coords[0] - self.goal.coords)
-        dy = abs(cell.coords[1]- self.goal.coords)
-
-        manhattandistance = dx + dy
-
-        return manhattandistance
-
-    def pathcostcalc(self,cell):
-        #The travel cost from the current cell back to the start
-        travelCost = 0
-        #Stores the cell into inital 
-        initialcell = cell
-        
-        #Works out the cost using a loop going through the current cells path and adding the distance between each cell
-        travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
-        if self.heuristic == 'zero':
-            travelCost = travelCost + 0
-        elif self.heuristic == 'constant':
-            if travelCost > 0:
-                travelCost = travelCost + 7
-        elif self.heuristic == 'euclid':
-            if travelCost > 0:
-                travelCost += self.eucliddistance(cell)
-        elif self.heuristic == 'octile':
-            if travelCost > 0:
-                travelCost += self.octiledistance(cell)
-        else self.heuristic == 'manh':
-            if travelCost > 0:
-
-
-
-        while (cell is not None):
-            travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
-            cell = cell.parent
-
-        #Stores into the pathcost into the cell object
-        initialcell.pathCost = travelCost
-
-=======
->>>>>>> miracle
     #Sort the elements and put the best at the front
     def pushCellOntoQueue(self, cell):
         self.pathcostcalc(cell)
@@ -98,30 +38,30 @@ class ASTARPLANNER(CellBasedForwardSearch):
 
 
     def resolveDuplicate(self, cell, parentCell):
-        newqueue =[]
+        # newqueue =[]
         
-        #Calculate the length between the current cell and the duplicate cell 
-        length = self.computeLStageAdditiveCost(cell,parentCell)
-        #The predicted path cost of the new path of the duplicate cell
-        predicted_path_cost = parentCell.pathCost + length
+        # #Calculate the length between the current cell and the duplicate cell 
+        # length = self.computeLStageAdditiveCost(cell,parentCell)
+        # #The predicted path cost of the new path of the duplicate cell
+        # predicted_path_cost = parentCell.pathCost + length
         
-        #If the predicted path is less than the current path then it needs to be changed.
-        if predicted_path_cost < cell.pathCost:
-            #The duplicate cell needs to have the current cell as its parent
-            cell.parent = parentCell
-            cell.pathCost = predicted_path_cost
+        # #If the predicted path is less than the current path then it needs to be changed.
+        # if predicted_path_cost < cell.pathCost:
+        #     #The duplicate cell needs to have the current cell as its parent
+        #     cell.parent = parentCell
+        #     cell.pathCost = predicted_path_cost
 
-            #Need to remove the cell and replace it with the correct path cost
-            currentcell = self.popCellFromQueue()
-            while(currentcell.coords != cell.coords):
-                newqueue.append(currentcell)
-                currentcell = self.popCellFromQueue()
+        #     #Need to remove the cell and replace it with the correct path cost
+        #     currentcell = self.popCellFromQueue()
+        #     while(currentcell.coords != cell.coords):
+        #         newqueue.append(currentcell)
+        #         currentcell = self.popCellFromQueue()
             
-            #Stores the cells before it can access the wanted cell then places the new cell and all the old ones
-            self.pushCellOntoQueue(cell)
-            for oldcells in newqueue:
-                self.pushCellOntoQueue(oldcells)
-
+        #     #Stores the cells before it can access the wanted cell then places the new cell and all the old ones
+        #     self.pushCellOntoQueue(cell)
+        #     for oldcells in newqueue:
+        #         self.pushCellOntoQueue(oldcells)
+        pass
 
 
     def pathcostcalc(self,cell):
@@ -147,7 +87,7 @@ class ASTARPLANNER(CellBasedForwardSearch):
 
     def heuristic_cost(self, cell):
 
-        if self.heuristic == 'euclidean_distance':
+        if self.heuristic == 'euclid':
             # Calculate the euclidean distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])
@@ -161,13 +101,13 @@ class ASTARPLANNER(CellBasedForwardSearch):
             # Add non-negative constant to cost
             return 1
         
-        elif self.heuristic == 'octile_distance':
+        elif self.heuristic == 'octile':
             # Calculate the octile distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])
             return 1*max(dx,dy) + (sqrt(2)-1)*min(dx,dy)
         
-        elif self.heuristic == 'manhattan_distance':
+        elif self.heuristic == 'manhat':
             # Calculate the manhattan distance between the current cell and the goal
             dx = abs(cell.coords[0] - self.goal.coords[0])
             dy = abs(cell.coords[1] - self.goal.coords[1])

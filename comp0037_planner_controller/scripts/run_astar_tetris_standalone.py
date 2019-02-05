@@ -9,11 +9,17 @@ import sys
 
 occupancyGrid = OccupancyGrid(21, 21, 0.5)
 
-for y in xrange(1, 19):
-    occupancyGrid.setCell(11, y, 1)
+for x in xrange(3, 15):
+    occupancyGrid.setCell(x, 10, 1)
 
-start = (3, 18)
-goal = (20, 0)
+for x in xrange(16,19):
+    occupancyGrid.setCell(x,8,1)
+
+for y in range(8,11):
+    occupancyGrid.setCell(15,y,1)
+
+start = (3, 10)
+goal = (17, 9)
 
 heuristic = sys.argv[1]
 print(heuristic)
