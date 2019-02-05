@@ -31,8 +31,6 @@ class DIJKSTRAPlanner(CellBasedForwardSearch):
         
         #Works out the cost using a loop going through the current cells path and adding the distance between each cell
         travelCost = self.computeLStageAdditiveCost(cell.parent, cell)
-        if travelCost > 0:
-            travelCost += self.eucliddistance(cell)
 
         while (cell is not None):
             travelCost = travelCost + self.computeLStageAdditiveCost(cell.parent, cell)
